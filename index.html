@@ -24,7 +24,13 @@
 
       <div class="goal-container">
         <label for="goal-field">Goal</label>
-        <input type="text" name="goal-field" value="">
+        <input type="number" name="goal-field" value="">
+        <select class="" name="goal-unit-field">
+          <option value="mpd">minutes per day</option>
+          <option value="ppd">pages per day</option>
+          <option value="th">total hours</option>
+          <option value="tp">total pages</option>
+        </select>
       </div>
 
       <div class="data-feld-container">
@@ -45,15 +51,25 @@
     </div>
   </body>
   <script type="text/javascript">
+
     const MS_IN_DAY = 1000 * 60 * 60 * 24
+    const UNITS = {
+      "hours": "hours",
+      "pages": "pages"
+    }
+    const SCALE = {
+      "perday": "per day",
+      "total": "total"
+    }
 
     // templates:
     var probability_t = Handlebars.compile("{{prob}}%");
-    var plan_t = Handlebars.compile("Over your {{days}} day period, you'd have to read {{pace}} {{unit}} per day");
-    var history_t = Handlebars.compile("Historically, you read on average {{average}} {{unit}} per day");
+    var plan_t = Handlebars.compile("Over your {{days}} day period, you'd have to read {{pace}} {{unit}}");
+    var history_t = Handlebars.compile("Historically, you read on average {{average}} {{unit}}");
 
     // specify the unit of the goal: will be pages or hours (or something else)
-    var unit = "hours"
+    var unit = UNITS.hours
+    var scale = SCALE.perday
 
     var startDate = null
     var endDate = null
@@ -62,12 +78,14 @@
 
     // set default values for the outcomes
     document.getElementById("outcome-probability").innerText = probability_t({prob: 0})
-    document.getElementById("outcome-plan").innerText = plan_t({days: "NA", pace: "NA", unit: unit})
-    document.getElementById("outcome-history").innerText = history_t({average: "NA", unit: unit})
+    document.getElementById("outcome-plan").innerText = plan_t({days: "NA", pace: "NA", unit: "hours per day"})
+    document.getElementById("outcome-history").innerText = history_t({average: "NA", unit: "hours per day"})
 
     // grab the DOM elements for parameters
     var startDateField = document.getElementsByName("start-date-field")[0]
     var endDateField = document.getElementsByName("end-date-field")[0]
+    var goalField = document.getElementsByName("goal-field")[0]
+    var goalUnitField = document.getElementsByName("goal-unit-field")[0]
 
     // update the start date of the goal
     var updateStartDate = (date) => {
@@ -79,6 +97,33 @@
       endDate = date;
     }
 
+    // update the numerical goal, regardless of units or scale
+    var updateGoal = (_goal) => {
+      goal = _goal;
+    }
+
+    // update the unit and scale structures
+    var updateGoalUnit = (selector) => {
+      switch (selector) {
+        case "mpd":
+          unit = UNITS.hours
+          scale = SCALE.perday
+          break;
+        case "th":
+          unit = UNITS.hours
+          scale = SCALE.total
+          break;
+        case "ppd":
+          unit = UNITS.pages
+          scale = SCALE.perday
+          break;
+        case "tp":
+          unit = UNITS.pages
+          scale = SCALE.total
+          break;
+      }
+    }
+
     // update the number of days in the period
     var updateDays = () => {
       if (startDate && endDate) {
@@ -88,12 +133,31 @@
 
     // separate concerns and refresh plan outcome
     var refreshPlanOutcome = () => {
-      let pace = "NA";
-      if (goal) {
-        pace = goal / days
+      let _pace = "NA";
+      let _days = "NA"
+      let _units = unit + " per day"
+
+      // if the dates have been set, display the # of days
+      if (days) {
+        _days = days
       }
 
-      document.getElementById("outcome-plan").innerText = plan_t({days: days, pace: pace, unit: unit})
+      // if both the goal and the days are set, display the pace
+      if (goal && days) {
+        // figure out how to scale the pace
+        if (scale == SCALE.total) _pace = goal / days
+        else if (unit == UNITS.hours) _pace = goal / 60
+        else _pace = goal * 1.0
+
+        _pace = _pace.toFixed(1) // for pretty printing
+
+        // we shouldn't recommend more than 24 hours of reading per day
+        if (unit == UNITS.hours && _pace >= 24) {
+          _pace = "NA"
+        }
+      }
+
+      document.getElementById("outcome-plan").innerText = plan_t({days: _days, pace: _pace, unit: _units})
     }
 
     // event listeners
@@ -106,6 +170,16 @@
     endDateField.addEventListener('change', (event) => {
       updateEndDate(new Date(event.target.value))
       updateDays()
+      refreshPlanOutcome()
+    });
+
+    goalField.addEventListener('change', (event) => {
+      updateGoal(event.target.value)
+      refreshPlanOutcome()
+    });
+
+    goalUnitField.addEventListener('change', (event) => {
+      updateGoalUnit(event.target.value)
       refreshPlanOutcome()
     });
 
