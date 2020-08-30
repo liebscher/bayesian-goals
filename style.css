@@ -1,0 +1,33 @@
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.main-container {
+  width: 56%;
+  padding: 15% 2%;
+}
+
+.dates-container {
+  width: 40%; /* to determine how far right the end date field will be */
+  display: flex;
+  justify-content: space-between; /* to get the inputs next to each other */
+  margin-bottom: 1em;
+}
+
+.dates-container input {
+  margin-bottom: 4px;
+}
+
+.goal-container {
+  margin-bottom: 1em;
+}
+
+.plot-container {
+  color: #aaa;
+}

@@ -3,11 +3,111 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello World!</title>
+    <title>Bayesian Reading Goals</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- import handlebars for simple templating capabilities -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
   </head>
   <body>
-    <div class="">
-      <h2>Hello World!</h2>
+    <div class="main-container">
+      <div class="dates-container">
+        <div class="">
+          <label for="start-date-field">Start Date</label>
+          <input type="date" name="start-date-field" value="">
+        </div>
+        <div class="">
+          <label for="end-date-field">End Date</label>
+          <input type="date" name="end-date-field" value="">
+        </div>
+      </div>
+
+      <div class="goal-container">
+        <label for="goal-field">Goal</label>
+        <input type="text" name="goal-field" value="">
+      </div>
+
+      <div class="data-feld-container">
+          <textarea name="data-field" rows="8" cols="80"></textarea>
+      </div>
+
+      <div class="outcome-container">
+        <h4>The probability you meet your goal is:</h4>
+        <h3 id="outcome-probability"></h3>
+        <div class="">
+          <p id="outcome-plan"></p>
+          <p id="outcome-history"></p>
+        </div>
+        <div class="plot-container">
+          Distribution plot here
+        </div>
+      </div>
     </div>
   </body>
+  <script type="text/javascript">
+    const MS_IN_DAY = 1000 * 60 * 60 * 24
+
+    // templates:
+    var probability_t = Handlebars.compile("{{prob}}%");
+    var plan_t = Handlebars.compile("Over your {{days}} day period, you'd have to read {{pace}} {{unit}} per day");
+    var history_t = Handlebars.compile("Historically, you read on average {{average}} {{unit}} per day");
+
+    // specify the unit of the goal: will be pages or hours (or something else)
+    var unit = "hours"
+
+    var startDate = null
+    var endDate = null
+    var days = null // the total number of the days in the goal period
+    var goal = null // the numerical goal, unitless
+
+    // set default values for the outcomes
+    document.getElementById("outcome-probability").innerText = probability_t({prob: 0})
+    document.getElementById("outcome-plan").innerText = plan_t({days: "NA", pace: "NA", unit: unit})
+    document.getElementById("outcome-history").innerText = history_t({average: "NA", unit: unit})
+
+    // grab the DOM elements for parameters
+    var startDateField = document.getElementsByName("start-date-field")[0]
+    var endDateField = document.getElementsByName("end-date-field")[0]
+
+    // update the start date of the goal
+    var updateStartDate = (date) => {
+      startDate = date;
+    }
+
+    // update the end date of the goal
+    var updateEndDate = (date) => {
+      endDate = date;
+    }
+
+    // update the number of days in the period
+    var updateDays = () => {
+      if (startDate && endDate) {
+        days = (endDate - startDate) / MS_IN_DAY
+      }
+    }
+
+    // separate concerns and refresh plan outcome
+    var refreshPlanOutcome = () => {
+      let pace = "NA";
+      if (goal) {
+        pace = goal / days
+      }
+
+      document.getElementById("outcome-plan").innerText = plan_t({days: days, pace: pace, unit: unit})
+    }
+
+    // event listeners
+    startDateField.addEventListener('change', (event) => {
+      updateStartDate(new Date(event.target.value))
+      updateDays()
+      refreshPlanOutcome()
+    });
+
+    endDateField.addEventListener('change', (event) => {
+      updateEndDate(new Date(event.target.value))
+      updateDays()
+      refreshPlanOutcome()
+    });
+
+  </script>
 </html>
