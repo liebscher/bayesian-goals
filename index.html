@@ -50,6 +50,8 @@
       </div>
     </div>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+  <script src="bayesian.js"></script>
   <script type="text/javascript">
 
     const MS_IN_DAY = 1000 * 60 * 60 * 24
@@ -149,15 +151,35 @@
         else if (unit == UNITS.hours) _pace = goal / 60
         else _pace = goal * 1.0
 
-        _pace = _pace.toFixed(1) // for pretty printing
-
         // we shouldn't recommend more than 24 hours of reading per day
         if (unit == UNITS.hours && _pace >= 24) {
           _pace = "NA"
+        } else {
+          // if all is good, refresh the prob of meeting our goal
+          refreshProbability(_pace)
+          _pace = _pace.toFixed(1) // for pretty printing
         }
       }
 
       document.getElementById("outcome-plan").innerText = plan_t({days: _days, pace: _pace, unit: _units})
+    }
+
+    // refresh the probability statement
+    var refreshProbability = (pace) => {
+
+      // calculate the posterior parameters using some data
+      // NOTE: fake data here for the time being
+      parameters = marginal_posterior_parameters([], unit)
+
+      // calculate the t-stat quantile
+      let q = (pace - parameters.mean) / Math.pow((parameters.variance / parameters.k) / parameters.df, 0.5)
+
+      console.log([parameters, pace, q])
+
+      // calculate the area under the t-dist left of the quantile
+      let p = 1 - jStat.studentt.cdf(q, parameters.df)
+      // update the outcome text
+      document.getElementById("outcome-probability").innerText = probability_t({prob: p.toFixed(2) * 100})
     }
 
     // event listeners
