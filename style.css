@@ -24,6 +24,50 @@ body {
   margin-bottom: 4px;
 }
 
+/* ==== BEGIN TABLE STYLE ==== */
+
+.data-field-container table {
+  width: 60%;
+  border-collapse: collapse;
+}
+
+.data-field-container table thead {
+  border-bottom: 2px solid #333;
+}
+
+.data-field-container table th {
+  width: 33%;
+}
+
+.data-field-container table tbody {
+  border-bottom: 2px solid #333;
+}
+
+.data-field-container table td {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+}
+
+.data-field-container table td input {
+  border: 0;
+  outline: 0;
+}
+
+/* ==== END TABLE STYLE ==== */
+
+#add-row-container {
+  margin-top: 6px;
+  width: 60%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#add-row-container span {
+  cursor: pointer;
+  padding: 2px 6px;
+  border: 1px solid #ddd;
+}
+
 .goal-container {
   margin-bottom: 1em;
 }

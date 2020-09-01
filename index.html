@@ -33,8 +33,33 @@
         </select>
       </div>
 
-      <div class="data-feld-container">
-          <textarea name="data-field" rows="8" cols="80"></textarea>
+      <div class="data-field-container">
+          <!-- <textarea name="data-field" rows="8" cols="80"></textarea> -->
+          <p>Fill out some of your reading history to personalize your goal:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Minutes</th>
+                <th>Pages</th>
+              </tr>
+            </thead>
+            <tbody id="data-field-body">
+              <tr>
+                <td><input type="date" name="data-field" value=""></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+              </tr>
+              <tr>
+                <td><input type="date" name="data-field" value=""></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="add-row-container">
+            <span>Add Row</span>
+          </div>
       </div>
 
       <div class="outcome-container">
@@ -77,6 +102,10 @@
     var endDate = null
     var days = null // the total number of the days in the goal period
     var goal = null // the numerical goal, unitless
+    var goalPace = null
+
+    var readingHistory = [[], []]
+    var paceHistory = {[UNITS.hours]: [], [UNITS.pages]: []}
 
     // set default values for the outcomes
     document.getElementById("outcome-probability").innerText = probability_t({prob: 0})
@@ -88,6 +117,8 @@
     var endDateField = document.getElementsByName("end-date-field")[0]
     var goalField = document.getElementsByName("goal-field")[0]
     var goalUnitField = document.getElementsByName("goal-unit-field")[0]
+
+    var dataFieldBody = document.getElementById("data-field-body")
 
     // update the start date of the goal
     var updateStartDate = (date) => {
@@ -133,6 +164,43 @@
       }
     }
 
+    // update our reading history data structure with new info
+    var updateHistoryFromCellChange = (row, column, target) => {
+      // depending on the column, update the history
+      switch (column) {
+        case 0:
+          readingHistory[row][0] = target.value
+          break;
+        case 1:
+          readingHistory[row][1] = target.innerText / 60.0
+          break;
+        case 2:
+          readingHistory[row][2] = target.innerText * 1.0
+          break;
+      }
+    }
+
+    // update our pace history using new data from the user
+    var updatePaceHistory = () => {
+      // for each day of the history, update its value
+      readingHistory.forEach((row, ix) => {
+        // only if there's a date will we update the history
+        if (row[0]) {
+          if (row[1] && row[1] > 0) {
+            paceHistory[UNITS.hours][ix] = row[1]
+          } else {
+            paceHistory[UNITS.hours][ix] = undefined
+          }
+
+          if (row[2] && row[2] > 0) {
+            paceHistory[UNITS.pages][ix] = row[2]
+          } else {
+            paceHistory[UNITS.pages][ix] = undefined
+          }
+        }
+      })
+    }
+
     // separate concerns and refresh plan outcome
     var refreshPlanOutcome = () => {
       let _pace = "NA";
@@ -156,7 +224,8 @@
           _pace = "NA"
         } else {
           // if all is good, refresh the prob of meeting our goal
-          refreshProbability(_pace)
+          goalPace = _pace
+          refreshProbability()
           _pace = _pace.toFixed(1) // for pretty printing
         }
       }
@@ -165,21 +234,23 @@
     }
 
     // refresh the probability statement
-    var refreshProbability = (pace) => {
+    var refreshProbability = () => {
 
       // calculate the posterior parameters using some data
       // NOTE: fake data here for the time being
-      parameters = marginal_posterior_parameters([], unit)
+      parameters = marginal_posterior_parameters(paceHistory[unit].filter(Boolean), unit)
 
       // calculate the t-stat quantile
-      let q = (pace - parameters.mean) / Math.pow((parameters.variance / parameters.k) / parameters.df, 0.5)
+      let q = (goalPace - parameters.mean) / Math.pow((parameters.variance / parameters.k) / parameters.df, 0.5)
 
-      console.log([parameters, pace, q])
+      // console.log([parameters, goalPace, q])
 
       // calculate the area under the t-dist left of the quantile
       let p = 1 - jStat.studentt.cdf(q, parameters.df)
       // update the outcome text
-      document.getElementById("outcome-probability").innerText = probability_t({prob: p.toFixed(2) * 100})
+      if (goal && days) {
+          document.getElementById("outcome-probability").innerText = probability_t({prob: p.toFixed(2) * 100})
+      }
     }
 
     // event listeners
@@ -204,6 +275,65 @@
       updateGoalUnit(event.target.value)
       refreshPlanOutcome()
     });
+
+    // table event listeners
+    var setAllCellEventHandlers = () => {
+      // we select all cells in the table and update the reading history structure
+      let tablecells = dataFieldBody.querySelectorAll('td')
+      tablecells.forEach((elm, ix) => {
+        // figure out which row and column we're moving away from
+        let column = ix % 3;
+        let row = Math.floor(ix / 3)
+
+        let cellElement = elm
+        if (column == 0) {
+          cellElement = elm.children[0]
+        }
+
+        if (!readingHistory[row]) readingHistory[row] = []
+
+        // when we move away from a cell, update our history
+        cellElement.addEventListener('blur', (event) => {
+          updateHistoryFromCellChange(row, column, event.target)
+          updatePaceHistory()
+          refreshProbability()
+        })
+      })
+    }
+
+    setAllCellEventHandlers()
+
+    // create a button to add new rows to the table
+    document.querySelector("#add-row-container span").addEventListener('click', event => {
+
+      // build up a virtual DOM element
+      let fragment = new DocumentFragment()
+      let tr = document.createElement("tr")
+      let col1 = document.createElement("td")
+      let col2 = document.createElement("td")
+      let col3 = document.createElement("td")
+      let calendar = document.createElement("input")
+      calendar.setAttribute("type", "date")
+
+      col2.setAttribute("contenteditable", "true")
+      col3.setAttribute("contenteditable", "true")
+
+      col1.appendChild(calendar)
+
+      tr.appendChild(col1)
+      tr.appendChild(col2)
+      tr.appendChild(col3)
+
+      fragment.appendChild(tr)
+
+      let body = document.querySelector('#data-field-body')
+
+      // add the new row onto the table body
+      body.appendChild(fragment)
+
+      // refresh the cell event handlers
+      setAllCellEventHandlers()
+    })
 
   </script>
 </html>
