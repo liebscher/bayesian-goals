@@ -59,9 +59,9 @@ var marginal_posterior_parameters = (data, unit) => {
   let _mean = (_prior.k0 * _prior.mean0)/_k + (n * dmean)/_k
   let _df = _prior.df0 + n
   let _variance = _prior.df0 * _prior.variance0 +
-                  (n - 1) * vr(data) +
                   _prior.k0 * n * Math.pow(dmean - _prior.mean0, 2) / _k
 
+  _variance += n > 1 ? (n - 1) * vr(data) : 0
   _variance = _variance / _df
 
   return {
