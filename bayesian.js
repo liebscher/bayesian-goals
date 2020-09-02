@@ -10,7 +10,7 @@
 // https://www.pewresearch.org/fact-tank/2015/10/19/slightly-fewer-americans-are-reading-print-books-new-survey-finds/
 // https://www.theguardian.com/books/2015/dec/10/are-books-getting-longer-survey-marlon-james-hanya-yanagihara
 
-var prior_parameters = {
+const prior_parameters = {
   "hours": {
     "mean0": 0.1667,
     "k0": 1,
@@ -73,6 +73,18 @@ var marginal_posterior_parameters = (data, unit) => {
   }
 }
 
-var marginal_posterior_density = (parameters) => {
+var marginal_prior_density = (x, unit) => {
 
+  let sigma = Math.pow((prior_parameters[unit].variance0 / prior_parameters[unit].k0) / prior_parameters[unit].df0, 0.5)
+  let q = (x-prior_parameters[unit].mean0) / sigma
+
+  return jStat.studentt.pdf(q, prior_parameters[unit].df0) / sigma
+}
+
+var marginal_posterior_density = (x, parameters) => {
+
+  let sigma = Math.pow((parameters.variance / parameters.k) / parameters.df, 0.5)
+  let q = (x-parameters.mean) / sigma
+
+  return jStat.studentt.pdf(q, parameters.df) / sigma
 }

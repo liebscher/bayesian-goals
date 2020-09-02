@@ -69,13 +69,14 @@
           <p id="outcome-plan"></p>
           <p id="outcome-history"></p>
         </div>
-        <div id="plot-container">
-
-        </div>
+        <p>What does the underlying probability distribution look like?</p>
+        <div id="plot-container"></div>
+        <p>Enter data to update your personalized distribution from the baseline distribution</p>
       </div>
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.src.js"></script>
   <script src="bayesian.js"></script>
   <script type="text/javascript">
 
@@ -104,6 +105,7 @@
     var goal = null // the numerical goal, unitless
     var goalPace = null
 
+    // intialize the reading history data structure with one array for hours, another for pages
     var readingHistory = [[], []]
     var paceHistory = {[UNITS.hours]: [], [UNITS.pages]: []}
 
@@ -119,6 +121,62 @@
     var goalUnitField = document.getElementsByName("goal-unit-field")[0]
 
     var dataFieldBody = document.getElementById("data-field-body")
+
+    // set up the chart and prior curve
+    let xWidth = {[UNITS.hours]: 2, [UNITS.pages]: 30}
+    let xvalues = max => [...Array(200).keys()].map(x => max * x/200)
+
+    let priorCurves = _unit => xvalues(xWidth[_unit]).map(x => ({ x, y: marginal_prior_density(x, _unit)}))
+
+    let posteriorCurve = (params) => (xvalues(xWidth[unit]).map(x => (
+      {
+        x, y: marginal_posterior_density(x, params)
+      }
+    )))
+
+    let flatCurve = xvalues(xWidth[unit]).map(x => ({ x, y: 0 }))
+
+    var chart = Highcharts.chart('plot-container', {
+        chart: { type: 'area' },
+        title: { text: '' },
+        tooltip: { enabled: false },
+        series: [
+          {
+            data: priorCurves(unit),
+            opacity: 0.4,
+            name: "Baseline",
+            color: '#BDBDBD',
+            marker: { enabled: false }
+          },
+          {
+            data: flatCurve,
+            opacity: 0.6,
+            name: "Personalized",
+            color: '#2196F3',
+            marker: { enabled: false }
+          }
+        ],
+        xAxis: { plotLines: [], title: {text: 'hours per day'} },
+        yAxis: {
+          labels: { enabled: false },
+          gridLineWidth: 0,
+          title: ''
+        }
+    });
+
+    // update chart posterior plot
+    var redrawPosterior = (parameters) => {
+      chart.series[1].update({
+        data: posteriorCurve(parameters)
+      })
+    }
+
+    // update chart prior plot
+    var redrawPrior = () => {
+      chart.series[0].update({
+        data: priorCurves(unit)
+      })
+    }
 
     // update the start date of the goal
     var updateStartDate = (date) => {
@@ -226,6 +284,21 @@
           // if all is good, refresh the prob of meeting our goal
           goalPace = _pace
           refreshProbability()
+
+          // update chart goal line
+          if (chart.xAxis[0].options.plotLines.length == 0) {
+            chart.xAxis[0].addPlotLine({
+                value: goalPace,
+                width: 2,
+                color: '#333',
+                zIndex: 100
+            })
+          } else {
+            // if the goal line is already on the chart, just update the intercept
+            chart.xAxis[0].options.plotLines[0].value = goalPace
+          }
+          chart.xAxis[0].update()
+
           _pace = _pace.toFixed(1) // for pretty printing
         }
       }
@@ -237,7 +310,6 @@
     var refreshProbability = () => {
 
       // calculate the posterior parameters using some data
-      // NOTE: fake data here for the time being
       parameters = marginal_posterior_parameters(paceHistory[unit].filter(Boolean), unit)
 
       // calculate the t-stat quantile
@@ -251,6 +323,25 @@
       if (goal && days) {
           document.getElementById("outcome-probability").innerText = probability_t({prob: p.toFixed(2) * 100})
       }
+
+      return parameters
+    }
+
+    // refresh the history stats at the bottom of the page
+    var refreshHistoryStats = (_history) => {
+      let hHours = _history.map(r => r[1]).filter(Boolean)
+      let hPages = _history.map(r => r[2]).filter(Boolean)
+
+      let hAverages = {
+        hoursAverage: hHours.length ?
+          (hHours.reduce((a,b) => a + b) / hHours.length).toFixed(1) :
+          "NA",
+        pagesAverage: hPages.length ?
+          (hPages.reduce((a,b) => a + b) / hPages.length).toFixed(1) :
+          "NA",
+      }
+
+      document.getElementById("outcome-history").innerText = history_t(hAverages)
     }
 
     // event listeners
@@ -274,6 +365,11 @@
     goalUnitField.addEventListener('change', (event) => {
       updateGoalUnit(event.target.value)
       refreshPlanOutcome()
+      redrawPrior()
+      // use the calculated parameters to draw posterior curve
+      redrawPosterior(refreshProbability())
+      // change the chart units
+      chart.xAxis[0].update({title: {text: unit + " per day"}})
     });
 
     // table event listeners
@@ -290,36 +386,25 @@
           cellElement = elm.children[0]
         }
 
+        // need to set the inner array to access it
         if (!readingHistory[row]) readingHistory[row] = []
 
         // when we move away from a cell, update our history
         cellElement.addEventListener('blur', (event) => {
           updateHistoryFromCellChange(row, column, event.target)
           updatePaceHistory()
-          refreshProbability()
+          refreshHistoryStats(readingHistory)
 
-          // refresh the history stats at the bottom
-          let hHours = readingHistory.map(r => r[1]).filter(Boolean)
-          let hPages = readingHistory.map(r => r[2]).filter(Boolean)
-
-          let hAverages = {
-            hoursAverage: hHours.length ?
-              (hHours.reduce((a,b) => a + b) / hHours.length).toFixed(1) :
-              "NA",
-            pagesAverage: hPages.length ?
-              (hPages.reduce((a,b) => a + b) / hPages.length).toFixed(1) :
-              "NA",
-          }
-
-          document.getElementById("outcome-history").innerText = history_t(hAverages)
+          // use the newly calculated parameters to draw posterior curve
+          redrawPosterior(refreshProbability())
         })
       })
     }
 
     setAllCellEventHandlers()
 
-    // create a button to add new rows to the table
-    document.querySelector("#add-row-container span").addEventListener('click', event => {
+    // small static function to create empty table rows
+    var createEmptyRow = () => {
 
       // build up a virtual DOM element
       let fragment = new DocumentFragment()
@@ -341,10 +426,16 @@
 
       fragment.appendChild(tr)
 
+      return fragment
+    }
+
+    // create a button to add new rows to the table
+    document.querySelector("#add-row-container span").addEventListener('click', event => {
+
       let body = document.querySelector('#data-field-body')
 
       // add the new row onto the table body
-      body.appendChild(fragment)
+      body.appendChild(createEmptyRow())
 
       // refresh the cell event handlers
       setAllCellEventHandlers()

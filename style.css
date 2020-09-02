@@ -68,6 +68,10 @@ body {
   border: 1px solid #ddd;
 }
 
+#add-row-container span:hover {
+  background-color: #f7f7f7;
+}
+
 .goal-container {
   margin-bottom: 1em;
 }
