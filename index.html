@@ -69,8 +69,8 @@
           <p id="outcome-plan"></p>
           <p id="outcome-history"></p>
         </div>
-        <div class="plot-container">
-          Distribution plot here
+        <div id="plot-container">
+
         </div>
       </div>
     </div>
@@ -92,7 +92,7 @@
     // templates:
     var probability_t = Handlebars.compile("{{prob}}%");
     var plan_t = Handlebars.compile("Over your {{days}} day period, you'd have to read {{pace}} {{unit}}");
-    var history_t = Handlebars.compile("Historically, you read on average {{average}} {{unit}}");
+    var history_t = Handlebars.compile("Historically, you read on average {{hoursAverage}} hours per day and {{pagesAverage}} pages per day");
 
     // specify the unit of the goal: will be pages or hours (or something else)
     var unit = UNITS.hours
@@ -110,7 +110,7 @@
     // set default values for the outcomes
     document.getElementById("outcome-probability").innerText = probability_t({prob: 0})
     document.getElementById("outcome-plan").innerText = plan_t({days: "NA", pace: "NA", unit: "hours per day"})
-    document.getElementById("outcome-history").innerText = history_t({average: "NA", unit: "hours per day"})
+    document.getElementById("outcome-history").innerText = history_t({hoursAverage: "NA", pagesAverage: "NA"})
 
     // grab the DOM elements for parameters
     var startDateField = document.getElementsByName("start-date-field")[0]
@@ -169,7 +169,7 @@
       // depending on the column, update the history
       switch (column) {
         case 0:
-          readingHistory[row][0] = target.value
+          readingHistory[row][0] = new Date(target.value)
           break;
         case 1:
           readingHistory[row][1] = target.innerText / 60.0
@@ -297,6 +297,21 @@
           updateHistoryFromCellChange(row, column, event.target)
           updatePaceHistory()
           refreshProbability()
+
+          // refresh the history stats at the bottom
+          let hHours = readingHistory.map(r => r[1]).filter(Boolean)
+          let hPages = readingHistory.map(r => r[2]).filter(Boolean)
+
+          let hAverages = {
+            hoursAverage: hHours.length ?
+              (hHours.reduce((a,b) => a + b) / hHours.length).toFixed(1) :
+              "NA",
+            pagesAverage: hPages.length ?
+              (hPages.reduce((a,b) => a + b) / hPages.length).toFixed(1) :
+              "NA",
+          }
+
+          document.getElementById("outcome-history").innerText = history_t(hAverages)
         })
       })
     }
