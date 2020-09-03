@@ -12,7 +12,7 @@ To develop, clone this repository and open `index.html` in a browser. The applic
 
 # Contributing
 
-Please file an issue or email **@Alex** at alexliebscher0@gmail.com.
+Please file an issue or email **@liebscher** at alexliebscher0@gmail.com.
 
 # Acknowledgements
 
