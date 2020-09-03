@@ -6,18 +6,54 @@ html, body {
 body {
   display: flex;
   justify-content: center;
+  font-family: 'Noto Sans', Arial, sans-serif;
+}
+
+p, label, th, span {
+  font-size: 14px;
+}
+
+.heading {
+  font-family: 'Lora', Times, serif;
+  font-size: 3em;
+  margin-bottom: 1em;
 }
 
 .main-container {
   width: 56%;
-  padding: 15% 2%;
+  padding: 6% 4%;
+  text-align: center;
 }
 
+@media only screen and (max-width: 900px) {
+  .main-container {
+    width: 90%;
+  }
+}
+
+/* === content items === */
+
 .dates-container {
+  margin-left: 30%;
   width: 40%; /* to determine how far right the end date field will be */
   display: flex;
-  justify-content: space-between; /* to get the inputs next to each other */
+  justify-content: center; /* to get the inputs next to each other */
   margin-bottom: 1em;
+}
+
+.dates-container div:last-of-type {
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 900px) {
+  .dates-container {
+    margin-left: 25%;
+    width: 50%;
+    flex-wrap: wrap;
+  }
+  .dates-container div:last-of-type {
+    margin-left: 0;
+  }
 }
 
 .dates-container input {
@@ -27,8 +63,16 @@ body {
 /* ==== BEGIN TABLE STYLE ==== */
 
 .data-field-container table {
+  margin-left: 20%;
   width: 60%;
   border-collapse: collapse;
+}
+
+@media only screen and (max-width: 750px) {
+  .data-field-container table {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .data-field-container table thead {
@@ -57,9 +101,18 @@ body {
 
 #add-row-container {
   margin-top: 6px;
+  margin-right: 6px;
+  margin-left: 20%;
   width: 60%;
   display: flex;
   justify-content: flex-end;
+}
+
+@media only screen and (max-width: 750px) {
+  #add-row-container {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 #add-row-container span {
@@ -78,4 +131,8 @@ body {
 
 .plot-container {
   color: #aaa;
+}
+
+footer {
+  margin-top: 4em;
 }

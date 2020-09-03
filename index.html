@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bayesian Reading Goals</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
     <!-- import handlebars for simple templating capabilities -->
@@ -11,17 +13,20 @@
   </head>
   <body>
     <div class="main-container">
+      <h1 class="heading">Reading Goals</h1>
+      <p>Step 1: When will your goal start and end?</p>
       <div class="dates-container">
-        <div class="">
-          <label for="start-date-field">Start Date</label>
+        <div>
+          <p><label for="start-date-field">Start Date</label></p>
           <input type="date" name="start-date-field" value="">
         </div>
-        <div class="">
-          <label for="end-date-field">End Date</label>
+        <div>
+          <p><label for="end-date-field">End Date</label></p>
           <input type="date" name="end-date-field" value="">
         </div>
       </div>
-
+      <br>
+      <p>Step 2: Over that period, what's your goal?</p>
       <div class="goal-container">
         <label for="goal-field">Goal</label>
         <input type="number" name="goal-field" value="">
@@ -32,10 +37,9 @@
           <option value="tp">total pages</option>
         </select>
       </div>
-
+      <br>
+      <p>Step 3: Fill out some of your reading history to personalize your goal:</p>
       <div class="data-field-container">
-          <!-- <textarea name="data-field" rows="8" cols="80"></textarea> -->
-          <p>Fill out some of your reading history to personalize your goal:</p>
           <table>
             <thead>
               <tr>
@@ -69,10 +73,15 @@
           <p id="outcome-plan"></p>
           <p id="outcome-history"></p>
         </div>
+        <br>
         <p>What does the underlying probability distribution look like?</p>
         <div id="plot-container"></div>
-        <p>Enter data to update your personalized distribution from the baseline distribution</p>
+        <p>Enter data above to update your personal distribution from the baseline distribution</p>
       </div>
+      <footer>
+        <p>This website is unlike most others and does not collect your data to profit.</p>
+        <p>Created by <a href="https://liebscher.github.io/">Alex Liebscher</a></p>
+      </footer>
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
@@ -92,7 +101,7 @@
 
     // templates:
     var probability_t = Handlebars.compile("{{prob}}%");
-    var plan_t = Handlebars.compile("Over your {{days}} day period, you'd have to read {{pace}} {{unit}}");
+    var plan_t = Handlebars.compile("To meet your goal over your {{days}} day period, you'll have to read {{pace}} {{unit}}");
     var history_t = Handlebars.compile("Historically, you read on average {{hoursAverage}} hours per day and {{pagesAverage}} pages per day");
 
     // specify the unit of the goal: will be pages or hours (or something else)
