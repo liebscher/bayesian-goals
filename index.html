@@ -14,6 +14,9 @@
   <body>
     <div class="main-container">
       <h1 class="heading">Reading Goals</h1>
+      <img id="book" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAErklEQVR4nO2ab2hVZRjAf889Z/5htmEwobH6UEgrqa1ZUpTsU34ITUakRK1guCmIQn/I/qCGNSILhepDS3O1GYiTTBS0FahlCWpmykgx+rK5L1YjbJZ273n6cO9xd3d7zz2ecyYX9v7gcHnf9znP877veZ7nvvA+YLFYLBaLxTJJkbgKalbqYwgdQE3B0ADQNvCh7I9rYyJx4ypwoEN0zOIhuyEdwG1xbUwkoT2g5nmdPvUKG1GWAlWF403PjG7v3j5GxRDwm8AXuGz59QO5mD94xwqdRYpWlCbgdmBm2LnlcRHYcWUaawY2yz9hXgjtATMu867CStN4ZaZAsTdGZCYwF5jLVV6sXaHPnf1I9gHULtdFqnxGJtKi86kCVjmXAVgd5oXQG+AoSwA8ofGXDvnW75/TpgpQmS5QrNnfvo9FAO5t1vLMdOYhvICyEGXPXct1kaOIKl8CKWCvpNiUGub46W4ZDjs3n3tatdETDgFLSXoDXC/r9j9vHVl8rh8o7gG5BR0EDtYv09cV3gL8QEmp8trpT+TtsPMZjzNb5HDdMgWYFfYd4wbMeVKnTK3gTZRm4BbGujQAjmEDHIM8wKmt0t7Qog8CCwFQ9p7sjLf4QrsNLarAoED3v5dY19cjV8eTN25A+U1swOPlYgZ9V68whEDAe5vJbUBK2VTMTlgK7FYDa2aUo8Cr48mnjIoyNLseOPDwsU4R1xs3seH3V2ZGPyZ5nzLhuC8zbZgToVYXAl/nsU6RKRnmux44yrMmefMGKNWuwtFO+SHXHver+v2V6dGPSd7n+21yyZc51CN/X88ig8i3e6RLjuTa1UZ500BhDJti2vEYAGpadxf0Awj9QZMNyhNRCTtvH7MHFLiwyaXLlDbXo98fz3v6U2nagowXC5MohJ33tXHjgAa3fXo/l/1EPO4WS5RJ6CyajI0DXnA7CW6EzmI2YntAHEraA643mUShFJKgDQHjwGQPgUnvATYH2BAIbidBSYfApPcAmwNsCAS3k6CkQ2DSe4DNATYEgttJUNIhMOk9wOYAGwLB7SQo6RAw7eTWBzTqtIeB88C+VJr3W36Si/k2tt2nVZ7LarLXZbOB8khWSvgcUA7UA/WkWNXZoC3+ZD+9X59QZZvjURHbSgGJnwOaT0qkuqKdD+nNV/5jLh4vAQuAHnwbyk4gJfBVRnnPTfPj02dkKIqd7obRHloy54AlR+VP4GtFv9lRTzujb2tTCu1PnWKtILEyw0QmwQGgpqcucg4AYBcMucoJsjVDfknMEDBvVx1/9KDxymQUhJE7ycTOAa5Hm2arvm6NNcHsoh8N0ReVfmTkTjKxc0DTmeh3gPnsuVOrxaUZ2ABMyXVfVVhLmu2Lz8lgXBv5FAuBoPqAQVdh/xx9JMkJLT4ng4/3yTtlsN6/y3dh3eI+2Zj04g/crfNz+i+YZIJCoEvgFeC73tpkTywLzoo4aboQsnVBSjdAb228/DIG79oX7jKJGDfgL4f1VRnQbHmJscIiKguyX3vUX+oEnAwvoHT9XsYbJoHYtcLXw+HZ2s/YmuJC+hvPyw0rrzXmgInA8YzVJNeqSsq84KoSi8VisVgsFktC/A9JZPwnrP7ePQAAAABJRU5ErkJggg=="/>
+      <p class="wide-text">How can you set an achievable reading goal? This site approximates the probability that you'll meet your goal, based on only a small sample of how you already read. Give it a try!</p>
+      <br>
       <p>Step 1: When will your goal start and end?</p>
       <div class="dates-container">
         <div>
@@ -38,7 +41,8 @@
         </select>
       </div>
       <br>
-      <p>Step 3: Fill out some of your reading history to personalize your goal:</p>
+      <p>Step 3: Give a sample of how much you read per day:</p>
+      <p class="wide-text" style="color: #bbb;">Feel free to enter as much or as little as you'd like. This works best if you have kept track of your reading for a few days and know exactly how much you've read. Use the Minutes or Pages column according to your goal.</p>
       <div class="data-field-container">
           <table>
             <thead>
@@ -74,13 +78,14 @@
           <p id="outcome-history"></p>
         </div>
         <br>
-        <p>What does the underlying probability distribution look like?</p>
+        <p>Here are the underlying probability distributions:</p>
         <div id="plot-container"></div>
-        <p>Enter data above to update your personal distribution from the baseline distribution</p>
+        <p>Enter data above in either column to update your personal distribution from the baseline distribution</p>
       </div>
       <footer>
         <p>This website is unlike most others and does not collect your data to profit.</p>
         <p>Created by <a href="https://liebscher.github.io/">Alex Liebscher</a></p>
+        <p>Open Book icon by <a href="https://icons8.com/icon/52991/open-book">Icons8</a></p>
       </footer>
     </div>
   </body>
@@ -101,8 +106,8 @@
 
     // templates:
     var probability_t = Handlebars.compile("{{prob}}%");
-    var plan_t = Handlebars.compile("To meet your goal over your {{days}} day period, you'll have to read {{pace}} {{unit}}");
-    var history_t = Handlebars.compile("Historically, you read on average {{hoursAverage}} hours per day and {{pagesAverage}} pages per day");
+    var plan_t = Handlebars.compile("Your goal is to read {{pace}} {{unit}} over {{days}} days");
+    var history_t = Handlebars.compile("Historically, you've read on average {{hoursAverage}} hours per day and {{pagesAverage}} pages per day");
 
     // specify the unit of the goal: will be pages or hours (or something else)
     var unit = UNITS.hours
@@ -118,10 +123,13 @@
     var readingHistory = [[], []]
     var paceHistory = {[UNITS.hours]: [], [UNITS.pages]: []}
 
+    // determine if the goal is fully specified, with both dates and a goal
+    var isGoalFullySet = () => goal && days
+
     // set default values for the outcomes
     document.getElementById("outcome-probability").innerText = probability_t({prob: 0})
-    document.getElementById("outcome-plan").innerText = plan_t({days: "NA", pace: "NA", unit: "hours per day"})
-    document.getElementById("outcome-history").innerText = history_t({hoursAverage: "NA", pagesAverage: "NA"})
+    document.getElementById("outcome-plan").innerText = plan_t({days: "0", pace: "0", unit: "hours per day"})
+    document.getElementById("outcome-history").innerText = history_t({hoursAverage: "0", pagesAverage: "0"})
 
     // grab the DOM elements for parameters
     var startDateField = document.getElementsByName("start-date-field")[0]
@@ -143,7 +151,7 @@
       }
     )))
 
-    let flatCurve = xvalues(xWidth[unit]).map(x => ({ x, y: 0 }))
+    let flatCurve = () => xvalues(xWidth[unit]).map(x => ({ x, y: 0 }))
 
     var chart = Highcharts.chart('plot-container', {
         chart: { type: 'area' },
@@ -158,13 +166,23 @@
             marker: { enabled: false }
           },
           {
-            data: flatCurve,
+            data: flatCurve(),
             opacity: 0.6,
             name: "Personalized",
             color: '#2196F3',
             marker: { enabled: false }
           }
         ],
+        // TODO: color area only in the upper tail
+        // plotOptions: {
+        //   area: {
+        //     zoneAxis: 'x',
+        //     zones: [
+        //       {fillColor: 'white', value: 0},
+        //       {value: xWidth[unit]}
+        //     ]
+        //   },
+        // },
         xAxis: { plotLines: [], title: {text: 'hours per day'} },
         yAxis: {
           labels: { enabled: false },
@@ -174,9 +192,17 @@
     });
 
     // update chart posterior plot
-    var redrawPosterior = (parameters) => {
+    var redrawPosterior = () => {
+      let parameters = marginal_posterior_parameters(paceHistory[unit].filter(Boolean), unit)
       chart.series[1].update({
         data: posteriorCurve(parameters)
+      })
+    }
+
+    // when a user removes all data, reset the posterior curve
+    var drawFlatPosterior = () => {
+      chart.series[1].update({
+        data: flatCurve()
       })
     }
 
@@ -224,7 +250,7 @@
       }
     }
 
-    // update the number of days in the period
+    // update the number of days in the period if both dates are filled out
     var updateDays = () => {
       if (startDate && endDate) {
         days = (endDate - startDate) / MS_IN_DAY
@@ -268,10 +294,41 @@
       })
     }
 
+    // Update plotline and area highlighting on every new goal
+    var updateGoalVisualization = (_goalPace) => {
+      // update chart goal line
+      if (chart.xAxis[0].options.plotLines.length == 0) {
+        chart.xAxis[0].addPlotLine({
+            value: _goalPace,
+            width: 2,
+            color: '#333',
+            zIndex: 100
+        })
+      } else {
+        // if the goal line is already on the chart, just update the intercept
+        chart.xAxis[0].options.plotLines[0].value = _goalPace
+        chart.xAxis[0].update()
+      }
+
+      // only give area to the right of the goal line
+      // TODO: shade only the upper tail region, right of the goal line
+      //       currently fails to animate smoothly
+      // chart.series[0].update({
+      //   zoneAxis: 'x',
+      //   zones: [{ fillColor: 'white', value: _goalPace }, { value: xWidth[unit]}]
+      // })
+
+      // chart.series[1].update({
+      //   zoneAxis: 'x',
+      //   zones: [{ fillColor: 'white', value: _goalPace }, { value: xWidth[unit]}]
+      // })
+
+    }
+
     // separate concerns and refresh plan outcome
     var refreshPlanOutcome = () => {
-      let _pace = "NA";
-      let _days = "NA"
+      let _pace = "0";
+      let _days = "0"
       let _units = unit + " per day"
 
       // if the dates have been set, display the # of days
@@ -279,8 +336,7 @@
         _days = days
       }
 
-      // if both the goal and the days are set, display the pace
-      if (goal && days) {
+      if (isGoalFullySet()) {
         // figure out how to scale the pace
         if (scale == SCALE.total) _pace = goal / days
         else if (unit == UNITS.hours) _pace = goal / 60
@@ -290,67 +346,58 @@
         if (unit == UNITS.hours && _pace >= 24) {
           _pace = "NA"
         } else {
-          // if all is good, refresh the prob of meeting our goal
           goalPace = _pace
-          refreshProbability()
-
-          // update chart goal line
-          if (chart.xAxis[0].options.plotLines.length == 0) {
-            chart.xAxis[0].addPlotLine({
-                value: goalPace,
-                width: 2,
-                color: '#333',
-                zIndex: 100
-            })
-          } else {
-            // if the goal line is already on the chart, just update the intercept
-            chart.xAxis[0].options.plotLines[0].value = goalPace
-          }
-          chart.xAxis[0].update()
-
-          _pace = _pace.toFixed(1) // for pretty printing
+          _pace = _pace.toFixed(2) // for pretty printing
         }
       }
 
       document.getElementById("outcome-plan").innerText = plan_t({days: _days, pace: _pace, unit: _units})
     }
 
-    // refresh the probability statement
-    var refreshProbability = () => {
-
+    var calculatePosteriorProbability = () => {
       // calculate the posterior parameters using some data
       parameters = marginal_posterior_parameters(paceHistory[unit].filter(Boolean), unit)
 
       // calculate the t-stat quantile
       let q = (goalPace - parameters.mean) / Math.pow((parameters.variance / parameters.k) / parameters.df, 0.5)
 
-      // console.log([parameters, goalPace, q])
+      // calculate the area under the t-dist right of the quantile (upper tail)
+      return 1 - jStat.studentt.cdf(q, parameters.df)
+    }
 
-      // calculate the area under the t-dist left of the quantile
-      let p = 1 - jStat.studentt.cdf(q, parameters.df)
-      // update the outcome text
-      if (goal && days) {
-          document.getElementById("outcome-probability").innerText = probability_t({prob: p.toFixed(2) * 100})
+    // refresh the probability statement
+    var refreshProbabilityStatement = () => {
+      if (isGoalFullySet()) {
+          let prettyPosteriorProbability = Number.parseInt(calculatePosteriorProbability() * 100)
+
+          document.getElementById("outcome-probability").innerText = probability_t({prob: prettyPosteriorProbability})
       }
-
-      return parameters
     }
 
     // refresh the history stats at the bottom of the page
     var refreshHistoryStats = (_history) => {
-      let hHours = _history.map(r => r[1]).filter(Boolean)
-      let hPages = _history.map(r => r[2]).filter(Boolean)
+      // keep only non-empty values of each inner array
+      let allHoursRead = _history.map(r => r[1]).filter(Boolean)
+      let allPagesRead = _history.map(r => r[2]).filter(Boolean)
 
-      let hAverages = {
-        hoursAverage: hHours.length ?
-          (hHours.reduce((a,b) => a + b) / hHours.length).toFixed(1) :
-          "NA",
-        pagesAverage: hPages.length ?
-          (hPages.reduce((a,b) => a + b) / hPages.length).toFixed(1) :
-          "NA",
+      let historicalReadingAverages = {
+        hoursAverage: allHoursRead.length ?
+          (allHoursRead.reduce((a,b) => a + b) / allHoursRead.length).toFixed(1) :
+          "0",
+        pagesAverage: allPagesRead.length ?
+          (allPagesRead.reduce((a,b) => a + b) / allPagesRead.length).toFixed(1) :
+          "0",
       }
 
-      document.getElementById("outcome-history").innerText = history_t(hAverages)
+      document.getElementById("outcome-history").innerText = history_t(historicalReadingAverages)
+    }
+
+    // determine if there is at least one row that has a complete pace (unit and date)
+    var hasReadingHistoryForUnit = (_unit) => {
+      for (let pace of paceHistory[_unit]) {
+        if (pace > 0) return true
+      }
+      return false
     }
 
     // event listeners
@@ -358,25 +405,40 @@
       updateStartDate(new Date(event.target.value))
       updateDays()
       refreshPlanOutcome()
+      refreshProbabilityStatement()
+      updateGoalVisualization(goalPace)
     });
 
     endDateField.addEventListener('change', (event) => {
       updateEndDate(new Date(event.target.value))
       updateDays()
       refreshPlanOutcome()
+      refreshProbabilityStatement()
+      updateGoalVisualization(goalPace)
     });
 
     goalField.addEventListener('change', (event) => {
       updateGoal(event.target.value)
       refreshPlanOutcome()
+      refreshProbabilityStatement()
+      updateGoalVisualization(goalPace)
     });
 
     goalUnitField.addEventListener('change', (event) => {
       updateGoalUnit(event.target.value)
       refreshPlanOutcome()
+      refreshProbabilityStatement()
+      updateGoalVisualization(goalPace)
+
+      // as the unit changes, we need to update the prior curve on chart
       redrawPrior()
-      // use the calculated parameters to draw posterior curve
-      redrawPosterior(refreshProbability())
+
+      if (hasReadingHistoryForUnit(unit)) {
+        redrawPosterior()
+      } else {
+        drawFlatPosterior()
+      }
+
       // change the chart units
       chart.xAxis[0].update({title: {text: unit + " per day"}})
     });
@@ -403,13 +465,19 @@
           updateHistoryFromCellChange(row, column, event.target)
           updatePaceHistory()
           refreshHistoryStats(readingHistory)
+          refreshProbabilityStatement()
 
           // use the newly calculated parameters to draw posterior curve
-          redrawPosterior(refreshProbability())
+          if (hasReadingHistoryForUnit(unit)) {
+            redrawPosterior()
+          } else {
+            drawFlatPosterior()
+          }
         })
       })
     }
 
+    // default on page, set event handlers for each of the six cells
     setAllCellEventHandlers()
 
     // small static function to create empty table rows

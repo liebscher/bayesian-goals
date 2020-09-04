@@ -15,6 +15,7 @@ p, label, th, span {
 
 .heading {
   font-family: 'Lora', Times, serif;
+  font-weight:  normal;
   font-size: 3em;
   margin-bottom: 1em;
 }
@@ -25,10 +26,24 @@ p, label, th, span {
   text-align: center;
 }
 
+.wide-text {
+  margin-left: 10%;
+  width: 80%;
+}
+
 @media only screen and (max-width: 900px) {
   .main-container {
     width: 90%;
   }
+  .wide-text {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+#book {
+  width: 48px;
+  margin-bottom: 1em;
 }
 
 /* === content items === */
